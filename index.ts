@@ -1,4 +1,4 @@
-import { createServer, request, IncomingMessage, ServerResponse } from 'http';
+import { createServer, request, IncomingMessage, ServerResponse, RequestOptions } from 'http';
 import { request as requestHttps } from 'https';
 import { parse } from 'url';
 
@@ -19,9 +19,10 @@ if (!EXPECTED_API_KEY.match(/^[A-Z0-9\-\_]{6,20}$/i)) {
 }
 
 function handler(client_req: IncomingMessage, client_res: ServerResponse) {
-  console.log('serve: ' + client_req.method + ' ' + client_req.url);
+  console.log(`serve: ${client_req.method} ${client_req.url}`);
 
-  if (!client_req.url!.startsWith('/' + EXPECTED_API_KEY + '/')) {
+  if (!client_req.url!.startsWith('/' + EXPECTED_API_KEY)) {
+    console.log(`respond: ${client_req.method} ${client_req.url} 401`);
     client_res.writeHead(401)
     client_res.write('Invalid api key\n')
     client_res.end();
@@ -30,7 +31,7 @@ function handler(client_req: IncomingMessage, client_res: ServerResponse) {
 
   const url = client_req.url!.substring(EXPECTED_API_KEY.length + 1);
 
-  var options = {
+  var options: RequestOptions = {
     hostname: DB_URL.host,
     port: DB_URL.port,
     path: DB_URL.pathname + url.replace(/\.+/g, '.'),
@@ -43,6 +44,7 @@ function handler(client_req: IncomingMessage, client_res: ServerResponse) {
   const reqFn = DB_URL.protocol === 'https:' ? requestHttps : request;
 
   var proxy = reqFn(options, function (res) {
+    console.log(`respond: ${client_req.method} ${client_req.url} ${res.statusCode!}`);
     client_res.writeHead(res.statusCode!, res.headers)
     res.pipe(client_res, {
       end: true
