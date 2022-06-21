@@ -14,7 +14,7 @@ const EXPECTED_API_KEY = process.env.API_KEY!
 if (!EXPECTED_API_KEY) {
   throw new Error('Missing API key. Please set API_KEY in environment.')
 }
-if (!EXPECTED_API_KEY.match(/^[A-Z0-9\-\_]{6,20}$/)) {
+if (!EXPECTED_API_KEY.match(/^[A-Z0-9\-\_]{6,20}$/i)) {
   throw new Error('Invalid API key. It must be between 6 and 20 characters long, and can only contain letters, numbers, or one of the following: _-')
 }
 
