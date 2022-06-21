@@ -1,4 +1,5 @@
 {
+  "name": "Replit-Secure-Database-proxy",
   "dependencies": {
     "@types/node": "^18.0.0"
   }
