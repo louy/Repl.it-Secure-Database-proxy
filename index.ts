@@ -28,7 +28,7 @@ function handler(client_req: IncomingMessage, client_res: ServerResponse) {
     return;
   }
 
-  const url = client_req.url!.substring(EXPECTED_API_KEY.length + 2);
+  const url = client_req.url!.substring(EXPECTED_API_KEY.length + 1);
 
   var options = {
     hostname: DB_URL.host,
